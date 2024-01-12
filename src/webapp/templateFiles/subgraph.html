@@ -1,0 +1,11 @@
+{% extends "base.html"%}
+{% block import %}
+    {{network.inject_css()}}
+{% endblock %}
+{% block title%} Flask Graph Visualization {% endblock %}
+{% block content%}
+    <h1>Subgraph generated for paper with id {{paper_id}}</h1>
+    <p>{{subgraph}}</p>
+    {{ network.inject_js() }}
+    {{ network.inject_graph() }}
+{% endblock %}
