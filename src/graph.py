@@ -1,29 +1,27 @@
-from paper import Paper
+import numpy as np
 
 class Graph():
     def __init__(self) -> None:
         self.__graph = {}
     
-    def add_node(self, node: Paper):
-        if node.eid not in self.__graph:
-            self.__graph[node.eid] = set()
+    def add_node(self, node):
+        if node not in self.__graph:
+            self.__graph[node] = set()
     
-    def add_edge(self, paper: Paper, cited_paper: Paper):
-        self.add_node(paper)
-        self.add_node(cited_paper)
+    def add_edge(self, fr, to):
+        self.add_node(fr)
+        self.add_node(to)
         
-        self.__graph[paper.eid].add(cited_paper.eid)
+        self.__graph[fr].add(to)
         
-    def remove_edge(self, paper: Paper, cited_paper: Paper):
-        self.__graph[paper.eid].remove(cited_paper.eid)
+    def remove_edge(self, fr, to):
+        self.__graph[fr].remove(to)
         
-    def remove_node(self, node: Paper):
-        del self.__graph[node.eid]
-        for paper in self.__graph:
-            self.remove_edge(paper, node)
+    def remove_node(self, node):
+        del self.__graph[node]
     
-    def get_connections(self, paper):
-        return self.__graph[paper.eid]
+    def get_node_connections(self, node):
+        return self.__graph[node]
     
     def get_edges(self):
         edges = []
@@ -33,17 +31,18 @@ class Graph():
                 edges.append( (node, con) )
         
         return edges
+    
+    def get_dict(self):
+        return self.__graph
         
         
 if __name__ == "__main__":
-    paper1 = Paper("Paper poco scientifico", "s2023-twitch123", "Article", 2023)
-    
-    paper2 = Paper("Paper molto scientifico", "s2023-rep1", "Conference Paper", 2022)
-    
+    node1 = ("Paper poco scientifico", "s2023-twitch123", "Article", 2023)
+    node2 = ("Paper molto scientifico", "s2023-rep1", "Conference Paper", 2022)
+
     graph = Graph()
-    graph.add_edge(paper1, paper2)
-    print(graph.get_connections(paper1))
-    print(graph.get_connections(paper2))
+    graph.add_edge(node1, node2)
     
-    
-    print(graph.get_edges())
+    print(graph.get_node_connections(node1))
+    print(graph.get_node_connections(node2))
+    print(graph.get_dict())
