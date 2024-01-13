@@ -6,6 +6,7 @@ import pandas as pd
 app = Flask(__name__, template_folder = "templateFiles", static_folder = "staticFiles")
 VisJS4().init_app(app)
 
+
 @app.route("/", methods = ["POST", "GET"])
 def index():
     if request.method == "POST":
@@ -24,15 +25,31 @@ def index():
             triples.append( (item[0], item[1], len(input_links)) )
         return render_template("index.html", triples = triples)
 
+
 @app.route("/subgraph/<paper>", methods=['GET', 'POST'])
 def subgraph(paper):
     paper_dataframe = pd.read_json("src/data/nlp_papers.json")
+    authors_dataframe = pd.read_json("src/data/nlp_authors.json")
     citation_graph = create_citation_graph(paper_dataframe)
+    scores = nx.pagerank(citation_graph)
+    sorted_scores = sorted(scores.items(), key = lambda x : x[1], reverse = True)
+    
     subgraph = create_subgraph(citation_graph, paper)
     
-    network = Network("500px", "1000px", directed = True)
+    network = Network("650px", "1000px", directed = True)
     for node in subgraph.nodes:
-        network.add_node(node)
+        current_paper_informations = tuple(paper_dataframe.loc[paper_dataframe["id"] == int(node)].iloc[0])
+        
+        pagerank = 0;
+        for couple in sorted_scores:
+            if couple[0] == node:
+                pagerank = couple[1]
+        
+        authors_list = []
+        authors_list = get_authors_name(authors_dataframe, current_paper_informations[3])
+        if node == paper: network.add_node(node, color = "red", titolo = current_paper_informations[1], abstract = current_paper_informations[2], authors = authors_list, year = str(current_paper_informations[4]), publisher = current_paper_informations[5], keywords = current_paper_informations[6], pagerank = pagerank)
+        else: network.add_node(node, titolo = current_paper_informations[1], abstract = current_paper_informations[2], authors = authors_list, year = str(current_paper_informations[4]), publisher = current_paper_informations[5], keywords = current_paper_informations[6], pagerank = pagerank)
+        
     network.add_edges(subgraph.edges)
     
     return render_template("subgraph.html", network = network, paper_id = paper, subgraph = subgraph)
@@ -87,6 +104,14 @@ def create_subgraph(graph, start_node):
         
     return sub
 
+def get_authors_name(dataframe, input_list):
+    authors = []
+    
+    for item in input_list:
+        row = tuple(dataframe.loc[:, int(item)])
+        authors.append(row[0] + " " + row[1])
+        
+    return authors
 
 if __name__ == "__main__":
     app.run(port = 8080, debug=True)

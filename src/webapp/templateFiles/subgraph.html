@@ -1,11 +1,76 @@
 {% extends "base.html"%}
 {% block import %}
     {{network.inject_css()}}
+    <link rel = "stylesheet" href = "/staticFiles/subgraph.css">
 {% endblock %}
 {% block title%} Flask Graph Visualization {% endblock %}
 {% block content%}
-    <h1>Subgraph generated for paper with id {{paper_id}}</h1>
-    <p>{{subgraph}}</p>
-    {{ network.inject_js() }}
-    {{ network.inject_graph() }}
+    <div class = "m-3">
+        <h2>Subgraph generated for paper with id {{paper_id}}</h2>
+        <p>{{subgraph}}</p>
+    </div>
+
+    <div class = "container-fluid">
+        <div class = "row">
+            <div class = "col">
+                {{ network.inject_js() }}
+                {{ network.inject_graph() }}
+            </div>
+
+            <div class = "col" style = "border: 1px solid lightgray; height: 650px; overflow-y: scroll;">
+                <table class = "m-2 table">
+                    <thead>
+                        <tr>
+                            <th id = "node-title"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td id = "node-publisher"></td></tr>
+                        <tr><td id = "node-year"></td></tr>
+                        <tr><td id = "node-pagerank"></td></tr>
+                        <tr><td id = "node-authors"></td></tr>
+                        <tr><td id = "node-keywords"></td></tr>
+                        <tr><td id = "node-abstract"></td></tr>
+                    </tbody>
+                </table>   
+            </div>
+        </div>
+    </div>
+    
+
+    <script type = "text/javascript">
+        network.on( 'click', function(properties) {
+            var nodeId = network.getNodeAt({x:properties.event.srcEvent.offsetX, y:properties.event.srcEvent.offsetY});
+            var node = nodes.get(nodeId);
+
+            title = document.getElementById("node-title");
+            title.innerText = node.titolo;
+
+            publisher = document.getElementById("node-publisher");
+            publisher.innerText = "Publisher: " + node.publisher;
+
+            year = document.getElementById("node-year");
+            year.innerText = "Publication Date: " + node.year;
+
+            year = document.getElementById("node-pagerank");
+            year.innerText = "Pagerank Value: " + node.pagerank;
+
+            authors = document.getElementById("node-authors");
+            authors.innerText = "Authors:\n";
+            node.authors.forEach(function (item) {
+                authors.innerText = authors.innerText + item + "\n";
+            });
+
+            keywords = document.getElementById("node-keywords");
+            keywords.innerText = "Keywords:\n";
+            node.keywords.forEach(function(item){
+                keywords.innerText = keywords.innerText + item + "\n";
+            });
+
+            abstract = document.getElementById("node-abstract");
+            abstract.innerText = "Abstract: \n" + node.abstract;
+        });
+
+
+    </script>
 {% endblock %}

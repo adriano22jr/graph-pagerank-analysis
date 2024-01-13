@@ -1,0 +1,26 @@
+#loadingBar {
+    top: auto;
+}
+
+#text {
+    top: -1px;
+    left: 520px;
+    font-size: 21px;
+}
+
+#border {
+    top: 4px;
+    left: 10px;
+    height: 20px;
+}
+
+#bar {
+    top: 4px;
+    left: 2px;
+    height: 12px;
+}
+
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
