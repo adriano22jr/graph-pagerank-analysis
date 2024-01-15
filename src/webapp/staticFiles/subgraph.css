@@ -24,3 +24,23 @@
     margin-left: 0;
     margin-right: 0;
 }
+
+#gradient-bar {
+	height: 15px;
+	width: 250px;
+	border-radius: 10px;
+	background: linear-gradient(to right, #7cdf50, #4591da);
+    margin-left: 8px;
+}
+
+.indicator {
+    font-size: 14px;
+}
+
+.card {
+	width: 300px;
+	color: black;
+    position: absolute;
+    top: 120px;
+    left: 40px;
+}
