@@ -1,6 +1,7 @@
 from flask_visjs import VisJS4, Network
 from flask import Flask, render_template_string, redirect, render_template, request, url_for
 from functions import *
+import pandas as pd
 
 app = Flask(__name__, template_folder = "templateFiles", static_folder = "staticFiles")
 VisJS4().init_app(app)
