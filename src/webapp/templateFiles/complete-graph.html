@@ -6,8 +6,8 @@
 {% block title%} Flask Graph Visualization {% endblock %}
 {% block content%}
     <div class = "m-3">
-        <h2>Subgraph generated for paper with id {{paper_id}}</h2>
-        <p>{{subgraph}}</p>
+        <h2>Complete citation graph</h2>
+        <p>{{graph}}</p>
     </div>
 
     <div class = "container-fluid">
@@ -82,7 +82,5 @@
             abstract = document.getElementById("node-abstract");
             abstract.innerText = "Abstract: \n" + node.abstract;
         });
-
-
     </script>
 {% endblock %}

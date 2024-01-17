@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block import %}
+    <link rel = "stylesheet" href = "/staticFiles/pagerank.css">
+{% endblock %}
+{% block title%} Flask Graph Visualization {% endblock%}
+{% block content%}
+    <div class = "d-flex justify-content-center">
+        <div class = "d-grid gap-2 text-center" style = "width: 800px;">
+            <h1>Graph pagerank table</h1>
+
+            <form action = "#" method = "POST">
+                <div class = "form-group mb-2">
+                    <input type = "text" class="form-control" name = "paper_id" id = "input_id" placeholder = "Enter an id to visualize the subgraph">
+                </div>
+                <button type = "submit" class= "btn btn-primary mb-3">Visualize Subgraph</button>
+            </form> 
+    
+            <div class = "table-wrapper-scroll-y custom-scrollbar">
+                <table class = "p-3 table table-striped table-sm ">
+                    <thead>
+                        <tr>
+                            <th class = "stick-position">Paper Id</th>
+                            <th class = "stick-position">PageRank</th>
+                            <th class = "stick-position">Citation Count</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        {% for triple in triples %}
+                        <tr>
+                            <td>{{triple[0]}}</td> 
+                            <td>{{triple[1]}}</td>
+                            <td>{{triple[2]}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <a href = "{{ url_for('complete_graph') }}"> Click here to see full graph! </a>
+        </div> 
+    </div>
+{% endblock %}
