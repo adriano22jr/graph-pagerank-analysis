@@ -26,6 +26,32 @@ def create_citation_graph(dataframe):
     
     return graph
 
+def create_weighted_citation_graph(papers, similarities):
+    graph = nx.DiGraph()  
+    nodes_list = set()
+    edges_list = []
+    
+    for paper_id in set(papers["id"]):
+        nodes_list.add(str(paper_id))
+    
+    current = 1    
+    for paper_id in set(papers["id"]):
+        percentage = (current / len(papers.axes[0]) * 100)
+        print(f"Current percentage: {percentage: .2f}%", end = "\r")
+        
+        current_paper = tuple(papers.loc[papers["id"] == paper_id].iloc[0])
+        references = current_paper[7]
+        for reference_id in references:
+            if reference_id in nodes_list:
+                key = str(paper_id) + "_" + reference_id
+                current_similarity = tuple(similarities.loc[similarities["id"] == key].iloc[0])
+                edges_list.append( (str(paper_id), reference_id, current_similarity[1]) )
+        current += 1
+    
+    graph.add_nodes_from(nodes_list)
+    graph.add_weighted_edges_from(edges_list)
+    return graph
+
 def create_subgraph(graph, start_node):
     sub = nx.DiGraph()
     nodes_list = set()
@@ -34,14 +60,13 @@ def create_subgraph(graph, start_node):
     ancestors = nx.ancestors(graph, start_node)
     for item in ancestors: nodes_list.add(item)
     
-    edges_list += graph.in_edges(start_node)
+    edges_list += graph.in_edges(start_node, data = True)
     
     for node in nodes_list:
-        edges_list += graph.in_edges(node)
+        edges_list += graph.in_edges(node, data = True)
         
     sub.add_nodes_from(nodes_list)
     sub.add_edges_from(edges_list)
-        
     return sub
 
 def get_authors_name(dataframe, input_list):
